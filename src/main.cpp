@@ -1,12 +1,13 @@
 #include <iostream>
 #include <memory>
+#include "Logger.h"
+#include "FileProcessor.h"
 
 /*
     参数配置：
     ZC -c 压缩模式 -e 加密模式 -f 文件 -o 输出文件
     加密必须进行防止意外，因此未设置时设定使用默认加密方式，压缩可选，默认不压缩；
 */
-
 struct Config {
     bool compress = false;
     bool encrypt = false;
@@ -16,9 +17,6 @@ struct Config {
     std::string output_path;
 };
 
-//假函数区，具体后续分文件实现，由各组件执行，这里是空声明
-std::string read_file(std::string& filepath);
-void save_file(std::string& output_path, std::string data);
 
 //假类区
 class Compressor 
@@ -86,7 +84,7 @@ int main(int argc, const char** argv)
     std::cout << "Output: " << config.output_path << std::endl;
 
     //加载文件内容，确认路径正确
-    std::string raw_data = read_file(config.file_path);
+    std::string raw_data = FileProcessor::read_File(config.file_path);
     //执行算法
     std::string intermediate;
     if(config.compress)
@@ -105,13 +103,14 @@ int main(int argc, const char** argv)
     {
         auto encryptor = EncryptionFactory::create(config.encrypt_);
         std::string final_data = encryptor->encrypt(intermediate);
-        save_file(config.output_path, final_data);
+        FileProcessor::write_File(config.output_path, final_data);
     }
     else
     {
-        auto encryptor = EncryptionFactory::create(config.encrypt_);
-        std::string final_data = encryptor->encrypt(intermediate);
-        save_file(config.output_path, final_data);
+        // auto encryptor = EncryptionFactory::create(config.encrypt_);
+        // std::string final_data = encryptor->encrypt(intermediate);
+        std::string final_data = intermediate;
+        FileProcessor::write_File(config.output_path, final_data);
     }
     
     std::cout << "ending..." << std::endl;
