@@ -1,0 +1,43 @@
+# --- 编译构建产物 ---
+# CMake 中间文件和缓存
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# 构建目录 (这是我们最重要的!)
+build/
+out/
+dist/
+
+# --- Visual Studio / VS Code ---
+# VS Code 的工作区设置（本地配置不上传）
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+
+# Visual Studio 自动生成的文件
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.user
+ipch/
+*.aps
+
+# --- 系统文件 ---
+# Windows
+Thumbs.db
+.DS_Store
+
+# --- 编译后的二进制文件 ---
+# 可执行文件 (Windows 和 Linux)
+*.exe
+*.out
+*.bin
+
+# 动态/静态库
+*.dll
+*.so
+*.a
+*.lib

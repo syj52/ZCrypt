@@ -1,0 +1,6 @@
+#ifndef ZCRYPT_ICOMPRESSION_H
+#define ZCRYPT_ICOMPRESSION_H
+
+
+
+#endif

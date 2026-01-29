@@ -1,0 +1,6 @@
+#ifndef ZCRYPT_IENCRYPTION_H
+#define ZCRYPT_IENCRYPTION_H
+
+
+
+#endif
