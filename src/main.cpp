@@ -2,6 +2,9 @@
 #include <memory>
 #include "Logger.h"
 #include "FileProcessor.h"
+#include "CompressionFactory.h"
+#include "EncryptionFactory.h"
+
 
 /*
     参数配置：
@@ -15,32 +18,6 @@ struct Config {
     std::string encrypt_ = "default";
     std::string file_path;
     std::string output_path;
-};
-
-
-//假类区
-class Compressor 
-{
-public:
-    virtual ~Compressor() = default;
-    virtual std::string compress(const std::string& data) = 0;
-};
-class CompressionFactory 
-{
-public:
-    static std::unique_ptr<Compressor> create(const std::string& compression_algorithm);
-};
-
-class Encryptor
-{
-public:
-    virtual ~Encryptor() = default;
-    virtual std::string encrypt(const std::string& data) = 0;
-};
-class EncryptionFactory
-{
-public:
-    static std::unique_ptr<Encryptor> create(const std::string& encryption_algorithm);
 };
 
 
