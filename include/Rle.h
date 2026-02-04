@@ -1,13 +1,12 @@
-#ifndef ZCRYPT_NULLCOMPRESSOR_H
-#define ZCRYPT_NULLCOMPRESSOR_H
+#ifndef ZCRYPT_RLE_H
+#define ZCRYPT_RLE_H
 
 #include "ICompression.h"
 
-// 空压缩算法（不进行任何压缩）
-class NullCompressor : public Compressor {
+class RleCompressor : public Compressor {
 public:
     std::vector<uint8_t> compress(const std::vector<uint8_t>& data) override;
     std::vector<uint8_t> decompress(const std::vector<uint8_t>& data) override;
 };
 
-#endif
+#endif // RLE_H

@@ -1,10 +1,12 @@
 #include <iostream>
 #include <memory>
+#include <vector>
 #include "Logger.h"
 #include "FileProcessor.h"
 #include "CompressionFactory.h"
 #include "EncryptionFactory.h"
 
+using byte = uint8_t;
 
 /*
     参数配置：
@@ -20,10 +22,8 @@ struct Config {
     std::string output_path;
 };
 
-
 int main(int argc, const char** argv) 
 {
-
     // 1. 解析参数
     Config config;
     for(int i = 1; i < argc; i++)
@@ -39,56 +39,70 @@ int main(int argc, const char** argv)
             config.encrypt_ = argv[++i];
         }
         else if (arg == "-f" || arg == "--file") {
-            if (i + 1 < argc) {
-                config.file_path = argv[++i]; // 获取下一个参数作为路径
-            }
+            config.file_path = argv[++i];
         }
         else if (arg == "-o" || arg == "--output") {
-            if (i + 1 < argc) {
-                config.output_path = argv[++i];
-            }
+            config.output_path = argv[++i];
         }
         else {
             std::cerr << "Unknown option: " << arg << std::endl;
             return 1;
         } 
     }
-    //TODO: 参数有效性检查
-    
-    // 配置内容
-    std::cout << "Mode:\n" << "\tCompress:" << config.compress_ << "\n\t" << "Encrypt:" << config.encrypt_ << std::endl;
+
+    // 参数有效性检查
+    if (config.file_path.empty()) {
+        std::cerr << "Error: Input file path is required!" << std::endl;
+        return 1;
+    }
+    if (config.output_path.empty()) {
+        std::cerr << "Error: Output file path is required!" << std::endl;
+        return 1;
+    }
+
+    // 显示配置信息
+    std::cout << "Mode:\n" << "\tCompress:" << (config.compress ? config.compress_ : "none") 
+              << "\n\tEncrypt:" << config.encrypt_ << std::endl;
     std::cout << "Input: " << config.file_path << std::endl;
     std::cout << "Output: " << config.output_path << std::endl;
 
-    //加载文件内容，确认路径正确
-    std::string raw_data = FileProcessor::read_File(config.file_path);
-    //执行算法
-    std::string intermediate;
+    // 2. 读取原始数据
+    std::vector<byte> raw_data = FileProcessor::read_File(config.file_path);
+
+    // 3. 处理数据
+    std::vector<byte> intermediate;
     if(config.compress)
     {
         auto compressor = CompressionFactory::create(config.compress_);
+        if (!compressor) {
+            std::cerr << "Error: Unknown compression algorithm: " << config.compress_ << std::endl;
+            return 1;
+        }
         intermediate = compressor->compress(raw_data);
-        // delete compressor;
     }
     else
     {
         intermediate = raw_data;
     }
     
-    // 中间表示 intermediate
+    // 4. 加密处理
+    std::vector<byte> final_data;
     if(config.encrypt)
     {
         auto encryptor = EncryptionFactory::create(config.encrypt_);
-        std::string final_data = encryptor->encrypt(intermediate);
-        FileProcessor::write_File(config.output_path, final_data);
+        if (!encryptor) {
+            std::cerr << "Error: Unknown encryption algorithm: " << config.encrypt_ << std::endl;
+            return 1;
+        }
+        final_data = encryptor->encrypt(intermediate);
     }
     else
     {
-        // auto encryptor = EncryptionFactory::create(config.encrypt_);
-        // std::string final_data = encryptor->encrypt(intermediate);
-        std::string final_data = intermediate;
-        FileProcessor::write_File(config.output_path, final_data);
+        final_data = intermediate;
     }
+    
+    // 5. 写入输出文件
+    FileProcessor::write_File(config.output_path, final_data);
     
     std::cout << "ending..." << std::endl;
     return 0;

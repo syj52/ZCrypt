@@ -1,11 +1,15 @@
-#ifndef ZCRYPT_NULLENCRYPTOR_H
-#define ZCRYPT_NULLENCRYPTOR_H
+#ifndef ZCRYPT_XOR_H
+#define ZCRYPT_XOR_H
+
 
 #include "IEncryption.h"
+#include <vector>
 
-// 空加密算法（不进行任何加密）
-class NullEncryptor : public Encryptor {
+class XorEncryptor : public Encryptor {
+private:
+    uint8_t key; // 密钥
 public:
+    XorEncryptor(uint8_t k = 0x55) : key(k) {}
     std::vector<uint8_t> encrypt(const std::vector<uint8_t>& data) override;
     std::vector<uint8_t> decrypt(const std::vector<uint8_t>& data) override;
 };

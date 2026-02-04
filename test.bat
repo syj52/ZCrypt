@@ -35,7 +35,7 @@ if not exist "%INPUT_FILE%" (
 )
 
 :: 运行程序
-"%EXE_PATH%" -c null -e null -f "%INPUT_FILE%" -o "%OUTPUT_FILE%"
+"%EXE_PATH%" -c null -e xor -f "%INPUT_FILE%" -o "%OUTPUT_FILE%"
 
 :: 检查结果
 if %errorlevel% neq 0 (
